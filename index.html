@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="CCOAP : CoAP implementation in C" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>CCOAP</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ipflavors/ccoap">View on GitHub</a>
+
+          <h1 id="project_title">CCOAP</h1>
+          <h2 id="project_tagline">CoAP implementation in C</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ipflavors/ccoap/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ipflavors/ccoap/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>CCOAP - CoAP implementation in C</h1>
+
+<p>CCOAP is a CoAP implementation written in C for Linux/MacOSX. It allows quick implementation of client/server applications with the help of a simple API. CCOAP is based on <a href="http://tools.ietf.org/html/draft-ietf-core-coap-08">draft-ietf-core-coap-08</a>.</p>
+
+<p>CCOAP is released under <a href="http://www.apache.org/licenses/LICENSE-2.0.html">the Apache License version 2.0</a>. CCOAP has been developped by Toyota InfoTechnology Center, USA, Inc. and is provided without any warranties. </p>
+
+<h2>Directory structure</h2>
+
+<p>The CCOAP project is composed of:</p>
+
+<pre><code>+--apps/
+|  |
+|  +--examples/
+|     |
+|     +--demo_commandline/
+|     |   * This sample application is a commandline client
+|     |     and server tool for tests purposes. The client allows 
+|     |     the setting of various CoAP options from the commandline
+|     |     (such as message and query type, payload, etc.), which
+|     |     can be useful for tests against a server. The server 
+|     |     replies to GET messages with a payload filled with the
+|     |     current time (otherwise it just replies with an empty 
+|     |     payload). The server can also be configured to reply
+|     |     with some delay in order to emulate lossy networks.
+|     |
+|     +--demo_time/
+|     |   * This is a sample application that shows how to 
+|     |     retrieve data such as the current time by a 
+|     |     client from a server using CoAP.
+|     |
+|     +--shared/
+|         * Shared coded used by the applications. 
+|
++--doc/
+|  |
+|  +--doxygen/
+|  |   * Doxygen documentation for the CCOAP library API
+|  |
+|  +--sample_config/
+|      * Sample configuration files for the CoAP client and
+|        server
+|
++--include/
+|      * Include files for application development.
+|
++--lib/
+|  |
+|  +--ccoap
+|  |   * The ccoap library, which contains the core CoAP
+|  |     functions. 
+|  |
+|  +--ccoapapps
+|      * The ccoapapps library, which contains the functions
+|        for client task management (in client_tasks/) and 
+|        server handlers (in server_handlers/).
+|
++--.cproject / .project
+    * Eclipse project files
+</code></pre>
+
+<h2>How to compile and/or clean the code</h2>
+
+<p>Retrieve the code and create a new directory for the project, at the same level than the ccoap/ directory. It will be used to build the code:</p>
+
+<pre><code>$ mkdir ccoap_build
+$ cd ccoap_build/
+</code></pre>
+
+<p>Build the code (you can also use <strong>Release</strong> instead of <strong>Debug</strong>):</p>
+
+<pre><code>$ cmake -D CMAKE_BUILD_TYPE=Debug ../ccoap
+$ make
+</code></pre>
+
+<p>The <strong>Release</strong> flag will remove most of the debug messages, but will keep error messages. Application binaries are located in the <strong>bin/</strong> directory. The CCOAP libraries are in the <strong>lib/</strong> directory.</p>
+
+<p>You can install the binaries and libraries with:</p>
+
+<pre><code># make install
+</code></pre>
+
+<p>You can cleanup the code with:</p>
+
+<pre><code>$ make clean
+</code></pre>
+
+<p>Note that <strong>.cproject</strong> and <strong>.project</strong> files for Eclipse are also available in the <strong>ccoap/</strong> directory. </p>
+
+<h2>How to run a sample application</h2>
+
+<p>First, you need to put the CoAP port number (5683) in your <strong>/etc/services</strong> file. On Linux, add the following line:</p>
+
+<pre><code>coap   udp/5683
+</code></pre>
+
+<p>On MacOSX (10.8) this is slightly different, you need to add:</p>
+
+<pre><code>coap   5683/udp
+</code></pre>
+
+<p>Some sample applications are located in the <strong>ccoap_build/bin/</strong> directory:</p>
+
+<ul>
+<li>
+<strong>coap_client_time</strong> / <strong>coap_server_time</strong> is a simple CoAP client / server application to retrieve data (here, the current time) by a client from a server.</li>
+<li>
+<strong>coap_client_commandline</strong> / <strong>coap_server_commandline</strong> is a configurable CoAP client and server from the commandline. </li>
+</ul><p>All of these sample applications accept the <strong>-h</strong> option to display some help about their command line options. </p>
+
+<p>They also accept the <strong>-f</strong> option to provide a configuration file. Sample configuration files are located in the <strong>doc/sample_config/</strong> directory. </p>
+
+<p>For example, for the time application, on the server side, you should use:</p>
+
+<pre><code>$ ./coap_server_time -f path/to/coap_server_config 
+</code></pre>
+
+<p>On the client side:</p>
+
+<pre><code>$ ./coap_client_time -t &lt;0/1&gt; \
+                     -s &lt;1-1000&gt; \
+                     -f path/to/coap_client_config
+</code></pre>
+
+<p>The <strong>-t</strong> option can be used with 0 for sending CON message, or 1 for sending NON message. The <strong>-s</strong> option can be used with a number between 1 and 1000 to send the corresponding number or requests (i.e. <strong>-s 15</strong> will send 15 requests).</p>
+
+<p>You should get a detailed description of the reply including the current time sent by the server.</p>
+
+<p><strong>NOTE:</strong> On MacOSX, if you use localhost as the server address, you need to explicitely specify <strong>127.0.0.1</strong> instead of <strong>localhost</strong> in the configuration file of the client. </p>
+
+<h2>Build you own client and server</h2>
+
+<p>There are several examples of clients and servers using the CCOAP library in the <strong>apps/examples/</strong> directory. You can use them as a base to start writing your own applications. The CCOAP API is documented using Doxygen, you can find the documentation in <strong>doc/doxygen/html/</strong>.</p>
+
+<p>Let's take the <strong>apps/examples/demo_time/</strong> application as an example. </p>
+
+<h3>The main server code (demo_time/server_main.c):</h3>
+
+<p>In the <em>main()</em> function, the default configuration items are loaded with <em>coap_default_config()</em>.</p>
+
+<p>The application type (here, COAP_ENUM_REQ_TIME) and handler (coap_req_handler_demo) for this type are registered with <em>coap_serv_handler_regist()</em>. Basically, handlers are callback functions called to process a request for a certain type of application.</p>
+
+<p>Your server can register multiple application types and handlers. At the moment, new application types must be manually added in the coap_req_type structure of the <strong>lib/ccoapapps/server_handlers/handlers.h</strong> file. </p>
+
+<p>The <em>coap_req_handler_demo()</em> handler is implemented in the <strong>shared/server_handler.c</strong> file that we describe later.</p>
+
+<p>The server can then process the extra command line arguments (such as the one to provide the configuration file). The <em>coap_server_config()</em> function can be called to process the configuration file given as argument. </p>
+
+<p>The <em>coap_server_init()</em> must then be called to initialize the server functions. After that, a call to the <em>coap_server_run()</em> function starts the the main server loop. Before the server exits, <em>coap_server_cleanup()</em> must be called. </p>
+
+<h3>The server handler (demo_time/server_handler.c and shared/server_handler.h):</h3>
+
+<p>The function called <em>coap_req_handler_demo()</em> is a simple handler for the time application. It handles the GET messages received from the client and fill the reply with the current time.</p>
+
+<p>For a slightly different handler example , you can have a look at the <strong>demo_commandline/server_handler.c</strong> file.</p>
+
+<h3>The main client code (demo_time/client_main.c):</h3>
+
+<p>In the <em>main()</em> function, the default configuration items are loaded with <em>coap_default_config()</em>.</p>
+
+<p>The application type (here, COAP_ENUM_USER_TIME) and task (coap_tasks_demo) for this type are registered with <em>coap_client_task_regist()</em>. Basically, tasks are callback functions called when application data that matches the request is is received by the client. </p>
+
+<p>At the moment, new application types must be manually added in the <em>coap_user_type</em> structure of the <strong>lib/ccoapapps/client_tasks/tasks.h</strong> file. </p>
+
+<p>The <em>coap_tasks_demo()</em> task function is implemented in the <em>shared/tasks_demo.c</em> file that we describe later.</p>
+
+<p>The client can then process the extra command line arguments (such as the one to provide the configuration file). The <em>coap_client_config()</em> function can be called to process the configuration file given as argument. </p>
+
+<p>The <em>coap_client_init()</em> must then be called to initialize the client functions. After that, a call to the <em>coap_client_run()</em> function starts the the main client loop. It takes as an argument a callback function (here <em>get_task()</em>, defined at the top of the file) and the data for this callback function. The data is user-defined with the definition of the task_data structure at the beginning of the file. Before the client exits, <em>coap_client_cleanup()</em> must be called.</p>
+
+<p>The <em>get_task()</em> function defined at the top of the file is a callback function called every time the client sends an application message to the server. It must be defined by the application developper and contain the code that fills the CoAP message options and payload. In the application example, we fill the CoAP header with a URI equal to 'time' in order to ask for the '/time' data to the server. </p>
+
+<h3>The client tasks (shared/tasks_demo.{c;h}):</h3>
+
+<p>This sample tasks callback is called <em>coap_tasks_demo()</em> and is also used by the <strong>demo_commandline/</strong> application. Upon reception of application messages from the server, it simply calls the <em>coap_dump_msg()</em> to display the received message, and dump the payload with <em>coap_dump_payload()</em>.</p>
+
+<h3>Some more useful functions</h3>
+
+<p>You can find all of the API in the <strong>include/ccoaplib.h</strong> file that you should include in your application files. </p>
+
+<p>Some useful macros for debug can be used in your application developments. You can use them similarly as the <em>printf()</em> function:</p>
+
+<ul>
+<li>
+<strong>DBG()</strong>: prints your debug message preprended with the function name. The macro is disabled when the code is compiled in <strong>Release</strong> mode.</li>
+<li>
+<strong>CDBG()</strong>: similar to DBG() except that the debug message is not prepended with the function name</li>
+<li>
+<strong>ERROR()</strong>: similar to DBG() except that the macro is never disabled, even in <strong>Release</strong> mode. </li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">CCOAP maintained by <a href="https://github.com/ipflavors">ipflavors</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
