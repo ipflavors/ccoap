@@ -1,5 +1,5 @@
-+-----------------------------+
-| CCOAP - A CoAP library in C |
-+-----------------------------+
++----------------------------------+
+| CCOAP - CoAP implementation in C |
++----------------------------------+
 
 Please read the doc/README file.

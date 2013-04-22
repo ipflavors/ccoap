@@ -161,7 +161,7 @@ example.
 * The main server code (demo_time/server_main.c):
 
 In the main() function, the default configuration items are
-loaded with coap_default_config()
+loaded with coap_default_config().
 
 The application type (here, COAP_ENUM_REQ_TIME) and handler
 (coap_req_handler_demo) for this type are registered with 
@@ -171,7 +171,7 @@ application.
 
 Your server can register multiple application types and 
 handlers. At the moment, new application types must be 
-manually  added in the coap_req_type structure of the 
+manually added in the coap_req_type structure of the 
 lib/ccoapapps/server_handlers/handlers.h file. 
 
 The coap_req_handler_demo() handler is implemented in the 
@@ -192,18 +192,18 @@ called.
 * The server handler (demo_time/server_handler.c and 
   shared/server_handler.h):
 
-called coap_req_handler_demo() is a simple handler for the 
-time application. It handles the GET messages received from 
-the client and fill the reply with the current time.
+The function called coap_req_handler_demo() is a simple handler
+for the time application. It handles the GET messages received
+from the client and fill the reply with the current time.
 
-For a slightly different handler example , you can have a look
+For a slightly different handler example, you can have a look
 at the demo_commandline/server_handler.c file.
 
 
 * The main client code (demo_time/client_main.c):
 
 In the main() function, the default configuration items are
-loaded with coap_default_config()
+loaded with coap_default_config().
 
 The application type (here, COAP_ENUM_USER_TIME) and task 
 (coap_tasks_demo) for this type are registered with 
