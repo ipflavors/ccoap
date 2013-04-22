@@ -1,0 +1,268 @@
++----------------------------------+
+| CCOAP - CoAP implementation in C |
++----------------------------------+
+
+CCOAP is a CoAP implementation written in C for Linux/MacOSX.
+It allows quick implementation of client/server applications
+with the help of a simple API. 
+
+CCOAP is based on draft-ietf-core-coap-08:
+http://tools.ietf.org/html/draft-ietf-core-coap-08
+
+CCOAP is released under the Apache License version 2.0. See 
+the LICENSE file for more information.
+
+CCOAP has been developped by Toyota InfoTechnology Center,
+USA, Inc. and is provided without any warranties. 
+
+
+0. Directory structure
+----------------------
+
+The CCOAP project is composed of:
+
++--apps/
+|  |
+|  +--examples/
+|     |
+|     +--demo_commandline/
+|     |   * This sample application is a commandline client 
+|     |     and server tool for tests purposes. The client allows 
+|     |     the setting of various CoAP options from the commandline
+|     |     (such as message and query type, payload, etc.), which 
+|     |     can be useful for tests against a server. The server 
+|     |     replies to GET messages with a payload filled with the
+|     |     current time (otherwise it just replies with an empty 
+|     |     payload). The server can also be configured to reply
+|     |     with some delay in order to emulate lossy networks.
+|     |
+|     +--demo_time/
+|     |   * This is a sample application that shows how to 
+|     |     retrieve data such as the current time by a 
+|     |     client from a server using CoAP.
+|     |
+|     +--shared/
+|         * Shared coded used by the applications. 
+|
++--doc/
+|  |
+|  +--doxygen/
+|  |   * Doxygen documentation for the CCOAP library API
+|  |
+|  +--sample_config/
+|      * Sample configuration files for the CoAP client and
+|        server
+|
++--include/
+|      * Include files for application development.
+|
++--lib/
+|  |
+|  +--ccoap
+|  |   * The ccoap library, which contains the core CoAP
+|  |     functions. 
+|  |
+|  +--ccoapapps
+|      * The ccoapapps library, which contains the functions
+|        for client task management (in client_tasks/) and 
+|        server handlers (in server_handlers/).
+|
++--.cproject / .project
+    * Eclipse project files
+
+
+1. How to compile and/or clean the code
+---------------------------------------
+
+Retrieve the code and create a new directory for the project,
+at the same level than the ccoap/ directory. It will be used
+to build the code:
+$ mkdir ccoap_build
+$ cd ccoap_build/
+
+Build the code (you can also use Release instead of Debug):
+$ cmake -D CMAKE_BUILD_TYPE=Debug ../ccoap
+$ make
+
+The "Release" flag will remove most of the debug messages, 
+but will keep error messages. 
+
+Application binaries are located in the 'bin' directory. The 
+CCOAP libraries are in the 'lib' directory.
+
+You can install the binaries and libraries with "make install".
+You can cleanup the code with "make clean".
+
+Note that '.cproject' and '.project' files for Eclipse are 
+also available in the ccoap/ directory. 
+
+
+2. How to run a sample application
+----------------------------------
+
+First, you need to put the CoAP port number (5683) in your
+/etc/services file. On Linux, add the following line:
+coap   udp/5683
+
+On MacOSX (10.8) this is slightly different, you need to add:
+coap   5683/udp
+
+Some sample applications are located in the ccoap_build/bin/ 
+directory:
+- coap_client_time / coap_server_time is a simple CoAP
+  client / server application to retrieve data (here, 
+  the current time) by a client from a server.
+- coap_client_commandline / coap_server_commandline is 
+  a configurable CoAP client and server from the
+  commandline. 
+
+All of these sample applications accept the '-h' option to 
+display some help about their command line options. 
+
+They also accept the '-f' option to provide a configuration
+file. Sample configuration files are located in the
+doc/sample_config directory. 
+
+For example, for the time application, on the server side,
+you should use:
+$ ./coap_server_time -f path/to/coap_server_config 
+
+On the client side:
+$ ./coap_client_time -t <0/1> \
+                     -s <1-1000> \
+                     -f path/to/coap_client_config
+
+The '-t' option can be used with 0 for sending CON message, 
+or 1 for sending NON message. The '-s' option can be used with 
+a number between 1 and 1000 to send the corresponding number
+or requests (i.e. '-s 15' will send 15 requests).
+
+You should get a detailed description of the reply including
+the current time sent by the server.
+
+Note: On MacOSX, if you use localhost as the server address, 
+you need to explicitely specify '127.0.0.1' instead of
+'localhost' in the configuration file of the client. 
+
+
+3. Build you own client and server
+----------------------------------
+
+There are several examples of clients and servers using the
+CCOAP library in the apps/examples/ directory. You can use
+them as a base to start writing your own applications. The 
+CCOAP API is documented using Doxygen, you can find the 
+documentation in doc/doxygen/html/.
+
+Let's take the apps/examples/demo_time/ application as an 
+example. 
+
+
+* The main server code (demo_time/server_main.c):
+
+In the main() function, the default configuration items are
+loaded with coap_default_config()
+
+The application type (here, COAP_ENUM_REQ_TIME) and handler
+(coap_req_handler_demo) for this type are registered with 
+coap_serv_handler_regist(). Basically, handlers are callback
+functions called to process a request for a certain type of
+application.
+
+Your server can register multiple application types and 
+handlers. At the moment, new application types must be 
+manually  added in the coap_req_type structure of the 
+lib/ccoapapps/server_handlers/handlers.h file. 
+
+The coap_req_handler_demo() handler is implemented in the 
+shared/server_handler.c file that we describe later.
+
+The server can then process the extra command line arguments
+(such as the one to provide the configuration file). The 
+coap_server_config() function can be called to process the 
+configuration file given as argument. 
+
+The coap_server_init() must then be called to initialize
+the server functions. After that, a call to the 
+coap_server_run() function starts the the main server loop.
+Before the server exits, coap_server_cleanup() must be
+called. 
+
+
+* The server handler (demo_time/server_handler.c and 
+  shared/server_handler.h):
+
+called coap_req_handler_demo() is a simple handler for the 
+time application. It handles the GET messages received from 
+the client and fill the reply with the current time.
+
+For a slightly different handler example , you can have a look
+at the demo_commandline/server_handler.c file.
+
+
+* The main client code (demo_time/client_main.c):
+
+In the main() function, the default configuration items are
+loaded with coap_default_config()
+
+The application type (here, COAP_ENUM_USER_TIME) and task 
+(coap_tasks_demo) for this type are registered with 
+coap_client_task_regist(). Basically, tasks are callback
+functions called when application data that matches the 
+request is is received by the client. 
+
+At the moment, new application types must be manually
+added in the coap_user_type structure of the 
+lib/ccoapapps/client_tasks/tasks.h file. 
+
+The coap_tasks_demo() task function is implemented in the 
+shared/tasks_demo.c file that we describe later.
+
+The client can then process the extra command line arguments
+(such as the one to provide the configuration file). The 
+coap_client_config() function can be called to process the 
+configuration file given as argument. 
+
+The coap_client_init() must then be called to initialize
+the client functions. After that, a call to the 
+coap_client_run() function starts the the main client loop.
+It takes as an argument a callback function (here get_task(), 
+defined at the top of the file) and the data for this callback
+function. The data is user-defined with the definition of the
+task_data structure at the beginning of the file. Before
+the client exits, coap_client_cleanup() must be called. 
+
+The get_task() function defined at the top of the file is
+a callback function called every time the client sends an 
+application message to the server. It must be defined by the
+application developper and contain the code that fills the
+CoAP message options and payload. In the application
+example, we fill the CoAP header with a URI equal to 'time'
+in order to ask for the '/time' data to the server. 
+
+
+* The client tasks (shared/tasks_demo.{c;h}):
+
+This sample tasks callback is called coap_tasks_demo() and is
+also used by the demo_commandline/ application. Upon reception
+of application messages from the server, it simply calls the 
+coap_dump_msg() to display the received message, and dump the 
+payload with coap_dump_payload().
+
+
+* Some more useful functions
+
+You can find all of the API in the include/ccoaplib.h file that
+you should include in your application files. 
+
+Some useful macros for debug can be used in your application
+developments. You can use them similarly as the 'printf'
+function:
+- DBG(): prints your debug message preprended with the
+  function name. The macro is disabled when the code is
+  compiled in 'Release' mode.
+- CDBG(): similar to DBG() except that the debug message is 
+  not prepended with the function name
+- ERROR(): similar to DBG() except that the macro is never
+  disabled, even in 'Release' mode. 
+

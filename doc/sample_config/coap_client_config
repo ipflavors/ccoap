@@ -1,0 +1,35 @@
+###############################################
+# Sample configuration file for a CoAP client #
+###############################################
+
+# Server name (default is localhost)
+# Use '127.0.0.1' instead on MacOSX
+server_name=localhost
+
+# Server port (default is 5683)
+port=5683
+
+# This option specifies whether socket is created per task
+# (i.e. per message, if set to 0) or for the whole session
+# (if set to 1). Set it to 1 if the server is a proxy or if
+# there is only a single server. Set it to 0 if the client
+# contacts multiple servers. 
+# Default is 1.
+server_is_proxy=1
+
+# Maximum number of packet retransmissions (default is 3)
+max_retransmit=3
+
+# Retransmission timeout (in seconds, default is 5)
+retransmit_timeout=5
+
+# In separate mode, specify how long the client waits
+# for a CON from the server before timeout (in seconds,
+# default is 3)
+max_wait_con=3
+
+# Number of threads for the client (default is 3)
+init_client_task_threads=3
+
+# Send/Receive buffer size (in Bytes, default is 1024)
+send_receive_buffer_size=1024

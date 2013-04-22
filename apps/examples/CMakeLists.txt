@@ -1,0 +1,4 @@
+INCLUDE_DIRECTORIES(shared)
+
+ADD_SUBDIRECTORY(demo_time)
+ADD_SUBDIRECTORY(demo_commandline)

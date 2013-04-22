@@ -1,0 +1,58 @@
++----------------------------------+
+| CCOAP - CoAP implementation in C |
++----------------------------------+
+
+See the TODOS file for a list of improvements planned for the next releases.
+
+---------------------
+2013/01 - Release 1.1
+---------------------
+
+Changes since release 1.0
+
+* CMake
+- Added check for presence of pthread library
+- Fixed the CMake warnings
+- Library renaming:
+-- Renamed libcoap into libccoap
+-- Renamed libcoapapps into libccoapapps
+- Directory reorganization
+-- Moved ccoap lib from lib/ to lib/ccoap
+-- Moved ccoapapps lib from lib/ to lib/ccoapapps
+-- Moved example/* into apps/example/*
+-- Renamed the InterOP sample app into commandline 
+
+* Code
+- Removed non-library code from library and moved it to application code
+- Added DBG/CDBG/ERROR macros for easy debug message management
+- Replaced all printf/fprintf with DBG/CDBG/ERROR macros 
+- Improved config file parsing (comments and blanks now allowed)
+- Simplifed the application API for clients and server. 
+  Building apps is a lot easier now with the use of the
+  coap_{client;server}_run/coap_{client;server}_cleanup functions
+- Fixed client/server bugs when application type did not match
+- Simplified server handlers and client tasks by moving the state
+  machines to the core CCOAP library
+- Added API functions to create client tasks more easily
+- Added default value for sample application options
+- Fixed bug regarding Message ID matching between CON and ACK
+- Fixed the display of thread identifiers 
+- Fixed various client memory leaks
+
+* Cosmetics
+- Renamed all 'handle' to 'handler' for clarity
+- Code indentation with:
+  $ indent input.c -br -ce -cdw -ts4 -i4 -nut -il0 -o output.c
+
+* Doc
+- Added license header (APACHE) to all files
+- Documented the sample configuration files
+- Improved the documentation (README)
+- Added doxygen documentation for the CCOAP API
+
+---------------------
+2012/01 - Release 1.0
+---------------------
+
+First release of this CoAP implementation.
+

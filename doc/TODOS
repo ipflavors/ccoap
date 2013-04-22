@@ -1,0 +1,17 @@
++----------------------------------+
+| CCOAP - CoAP implementation in C |
++----------------------------------+
+
+A wishlist of improvements for CCOAP:
+
+* Application types must be registered statically in the 
+  lib/ccoapapps/server_handlers/handlers.h and 
+  lib/ccoapapps/client_tasks/tasks.h file. It should be 
+  done differently. For example, on the server side, 
+  application type should be registered according to the
+  URI that is being accessed.
+
+* API should be extended with more functions, e.g. to get 
+  the message header code (instead of accessing msg->hdr.code),
+  or create message options easily. 
+

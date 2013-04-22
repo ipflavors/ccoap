@@ -1,0 +1,2 @@
+ADD_SUBDIRECTORY(ccoap)
+ADD_SUBDIRECTORY(ccoapapps)

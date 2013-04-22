@@ -1,0 +1,33 @@
+###############################################
+# Sample configuration file for a CoAP server #
+###############################################
+
+# Server port (default is 5683)
+port=5683
+
+# Maximum number of packet retransmissions (default is 3)
+max_retransmit=3
+
+# Retransmission timeout (in seconds, default is 5)
+retransmit_timeout=5
+
+# Time before the server considers a session has timed-out 
+# (in seconds, default is 30). This should be set to at 
+# least max_retransmit*retransmit_timeout
+session_timeout=30
+
+# Time Session cleanup interval (in seconds, default is 60)
+session_cleanup_time=60
+
+# Number of threads for the server (default is 3)
+init_server_session_threads=3
+
+# Send/Receive buffer size (in Bytes, default is 1024)
+send_receive_buffer_size=1024
+
+# The server listen queue (default is 10)
+server_listen_queue=10
+
+# Whether the server uses separate mode (1) or not (0)
+# Default is 1.
+separate_mode=1
